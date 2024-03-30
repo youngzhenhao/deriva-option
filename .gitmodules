@@ -10,3 +10,6 @@
 [submodule "packages/foundry/lib/ds-test"]
 	path = packages/foundry/lib/ds-test
 	url = https://github.com/dapphub/ds-test
+[submodule "packages/foundry/lib/solmate"]
+	path = packages/foundry/lib/solmate
+	url = https://github.com/Rari-Capital/solmate
