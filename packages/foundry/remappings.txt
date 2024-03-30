@@ -1,1 +1,8 @@
-@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts
+@openzeppelin/=modified/openzeppelin/
+@uniswap/v3-core/=modified/uniswap/v3-core/
+@uniswap/v3-periphery/=modified/uniswap/v3-periphery/
+@chainlink/=lib/chainlink-brownie-contracts/
+solmate/=lib/solmate/src/
+ds-test/=lib/ds-test/src/
+forge-std/=lib/forge-std/src/
+chainlink-brownie-contracts/=lib/chainlink-brownie-contracts/
