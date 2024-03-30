@@ -25,12 +25,7 @@ contract PutOptions is ReentrancyGuard {
     error TransferFailed();
     error OptionNotValid(uint256 _optionId);
 
-    event PutOptionOpen(
-        address indexed writer,
-        uint256 id,
-        uint256 expiration,
-        uint256 value
-    );
+    event PutOptionOpen(address indexed writer, uint256 id, uint256 expiration, uint256 value);
     event PutOptionBought(address indexed buyer, uint256 id);
     event PutOptionExercised(address indexed buyer, uint256 id);
     event OptionExpiresWorthless(address indexed buyer, uint256 Id);
@@ -67,16 +62,16 @@ contract PutOptions is ReentrancyGuard {
     }
 
     modifier optionExists(uint256 id) {
-        if (optionIdToOption[id].writer == address(0))
+        if (optionIdToOption[id].writer == address(0)) {
             revert OptionNotValid(id);
+        }
         _;
     }
 
     modifier isValidOpenOption(uint256 id) {
-        if (
-            optionIdToOption[id].optionState != OptionState.Open ||
-            optionIdToOption[id].expiration > block.timestamp
-        ) revert OptionNotValid(id);
+        if (optionIdToOption[id].optionState != OptionState.Open || optionIdToOption[id].expiration > block.timestamp) {
+            revert OptionNotValid(id);
+        }
         _;
     }
 
@@ -87,11 +82,7 @@ contract PutOptions is ReentrancyGuard {
 
     ///@dev Open a put option.
     ///ETH collateral(msg.value) must equal strike. In practice, there would be different strike options on the frontend.
-    function sellPut(
-        uint256 _strike,
-        uint256 _premiumDue,
-        uint256 _secondsToExpiry
-    ) external payable {
+    function sellPut(uint256 _strike, uint256 _premiumDue, uint256 _secondsToExpiry) external payable {
         //To simplify, we only make one strike available, strike is the current marketprice.
         if (msg.value != _strike) {
             revert Unauthorized();
@@ -112,31 +103,19 @@ contract PutOptions is ReentrancyGuard {
 
         tradersPosition[msg.sender].push(optionId);
 
-        emit PutOptionOpen(
-            msg.sender,
-            optionId,
-            block.timestamp + _secondsToExpiry,
-            msg.value
-        );
+        emit PutOptionOpen(msg.sender, optionId, block.timestamp + _secondsToExpiry, msg.value);
     }
 
     ///@dev Buy an available put option, for this example, we use DAI
     function buyPut(uint256 _optionId) external nonReentrant {
         Option memory option = optionIdToOption[_optionId];
 
-        if (
-            option.optionType != OptionType.Put ||
-            option.optionState != OptionState.Open
-        ) {
+        if (option.optionType != OptionType.Put || option.optionState != OptionState.Open) {
             revert Unauthorized();
         }
 
         //pay premium w DAI
-        bool paid = dai.transferFrom(
-            msg.sender,
-            option.writer,
-            option.premiumDue
-        );
+        bool paid = dai.transferFrom(msg.sender, option.writer, option.premiumDue);
         if (!paid) revert TransferFailed();
 
         optionIdToOption[_optionId].buyer = msg.sender;
@@ -167,15 +146,11 @@ contract PutOptions is ReentrancyGuard {
         uint256 marketPriceInDai = _amount / marketPriceInEth;
 
         //buyer gets to sell ETH for DAI at spot to option writer
-        bool paid = dai.transferFrom(
-            msg.sender,
-            option.writer,
-            marketPriceInDai
-        );
+        bool paid = dai.transferFrom(msg.sender, option.writer, marketPriceInDai);
         if (!paid) revert TransferFailed();
 
         //recall, for this example msg.value == strike == collateral
-        (paid, ) = payable(msg.sender).call{value: option.collateral}("");
+        (paid,) = payable(msg.sender).call{value: option.collateral}("");
         if (!paid) revert TransferFailed();
 
         optionIdToOption[_optionId].optionState = OptionState.Exercised;
@@ -188,16 +163,12 @@ contract PutOptions is ReentrancyGuard {
     ///----------------------------------------///
 
     ///@dev Put options are worthless and can be cancelled if spot price is > strike
-    function optionExpiresWorthless(uint256 _optionId, uint256 _amount)
-        external
-        optionExists(_optionId)
-    {
+    function optionExpiresWorthless(uint256 _optionId, uint256 _amount) external optionExists(_optionId) {
         Option memory option = optionIdToOption[_optionId];
 
         require(option.optionState == OptionState.Bought, "NEVER BOUGHT");
         require(
-            optionIdToOption[_optionId].buyer == msg.sender ||
-                optionIdToOption[_optionId].writer == msg.sender,
+            optionIdToOption[_optionId].buyer == msg.sender || optionIdToOption[_optionId].writer == msg.sender,
             "NOT BUYER OR WRITER"
         );
         require(option.expiration < block.timestamp, "NOT EXPIRED");
@@ -206,10 +177,7 @@ contract PutOptions is ReentrancyGuard {
         uint256 marketPriceInEth = priceFeed.getPriceFeed(_amount);
 
         //For put, if market > strike, put options expire worthless
-        require(
-            marketPriceInEth > option.strike,
-            "PRICE NOT GREATER THAN STRIKE"
-        );
+        require(marketPriceInEth > option.strike, "PRICE NOT GREATER THAN STRIKE");
         optionIdToOption[_optionId].optionState = OptionState.Cancelled;
 
         emit OptionExpiresWorthless(msg.sender, _optionId);
@@ -223,7 +191,7 @@ contract PutOptions is ReentrancyGuard {
         require(msg.sender == option.writer, "NOT WRITER");
 
         //if put option cancelled, writer can retrieve ETH collateral
-        (bool paid, ) = payable(msg.sender).call{value: option.collateral}("");
+        (bool paid,) = payable(msg.sender).call{value: option.collateral}("");
         if (!paid) revert TransferFailed();
 
         emit FundsRetrieved(msg.sender, _optionId, option.collateral);
