@@ -3,8 +3,7 @@ src = 'src'
 out = 'out'
 libs = ['lib']
 solc = "0.8.22"
-
-# See more config options https://github.com/gakonst/foundry/tree/master/config
+fs_permissions = [{ access = "read-write", path = "./"}]
 
 remappings = [
     '@openzeppelin=modified/openzeppelin',
@@ -17,7 +16,16 @@ remappings = [
 ]
 
 [rpc_endpoints]
-sepolia = "${env:SEPOLIA_RPC_URL}"
+default_network = "http://127.0.0.1:8545"
+localhost = "http://127.0.0.1:8545"
+sepolia = "https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+holesky="https://rpc.holesky.ethpandaops.io"
 
 [etherscan]
-sepolia = { key = "${env:ETHERSCAN_API_KEY}" }
+sepolia = { key = "${ETHERSCAN_API_KEY}" }
+
+[fmt]
+line_length = 80
+multiline_func_header = "params_first"
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config

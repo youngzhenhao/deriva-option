@@ -7,6 +7,8 @@ export type ScaffoldConfig = {
   walletConnectProjectId: string;
   onlyLocalBurnerWallet: boolean;
   walletAutoConnect: boolean;
+  // @dev: Add variable to allow disabling automatic use of the burner wallet
+  enabledBurnerWalletAuto: boolean;
 };
 
 const scaffoldConfig = {
@@ -38,6 +40,8 @@ const scaffoldConfig = {
    * 2. If user is not connected to any wallet:  On reload, connect to burner wallet if burnerWallet.enabled is true && burnerWallet.onlyLocal is false
    */
   walletAutoConnect: true,
+  // @dev: First check to see if automatic use of the burner wallet is allowed
+  enabledBurnerWalletAuto: false,
 } as const satisfies ScaffoldConfig;
 
 export default scaffoldConfig;
