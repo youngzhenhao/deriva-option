@@ -1,8 +1,8 @@
-// SPDX-License-Identifier: WTFPL
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.5.16;
 
-import {IUniswapV2Factory} from './interfaces/IUniswapV2Factory.sol';
-import {UniswapV2Pair} from './UniswapV2Pair.sol';
+import {IUniswapV2Factory} from "./interfaces/IUniswapV2Factory.sol";
+import {UniswapV2Pair} from "./UniswapV2Pair.sol";
 
 contract UniswapV2Factory is IUniswapV2Factory {
     address public feeTo;
@@ -17,15 +17,19 @@ contract UniswapV2Factory is IUniswapV2Factory {
         feeToSetter = _feeToSetter;
     }
 
-    function allPairsLength() external view returns (uint) {
+    function allPairsLength() external view returns (uint256) {
         return allPairs.length;
     }
 
-    function createPair(address tokenA, address tokenB) external returns (address pair) {
-        require(tokenA != tokenB, 'UniswapV2: IDENTICAL_ADDRESSES');
-        (address token0, address token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
-        require(token0 != address(0), 'UniswapV2: ZERO_ADDRESS');
-        require(getPair[token0][token1] == address(0), 'UniswapV2: PAIR_EXISTS'); // single check is sufficient
+    function createPair(
+        address tokenA,
+        address tokenB
+    ) external returns (address pair) {
+        require(tokenA != tokenB, "UniswapV2: IDENTICAL_ADDRESSES");
+        (address token0, address token1) =
+            tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
+        require(token0 != address(0), "UniswapV2: ZERO_ADDRESS");
+        require(getPair[token0][token1] == address(0), "UniswapV2: PAIR_EXISTS"); // single check is sufficient
         bytes memory bytecode = type(UniswapV2Pair).creationCode;
         bytes32 salt = keccak256(abi.encodePacked(token0, token1));
         assembly {
@@ -39,12 +43,12 @@ contract UniswapV2Factory is IUniswapV2Factory {
     }
 
     function setFeeTo(address _feeTo) external {
-        require(msg.sender == feeToSetter, 'UniswapV2: FORBIDDEN');
+        require(msg.sender == feeToSetter, "UniswapV2: FORBIDDEN");
         feeTo = _feeTo;
     }
 
     function setFeeToSetter(address _feeToSetter) external {
-        require(msg.sender == feeToSetter, 'UniswapV2: FORBIDDEN');
+        require(msg.sender == feeToSetter, "UniswapV2: FORBIDDEN");
         feeToSetter = _feeToSetter;
     }
 }

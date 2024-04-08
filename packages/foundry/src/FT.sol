@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: WTFPL
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -6,7 +6,10 @@ import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract FT is ERC20, Pausable, Ownable {
-    constructor(string memory name, string memory symbol) ERC20(name, symbol) Ownable(msg.sender) {}
+    constructor(
+        string memory name,
+        string memory symbol
+    ) ERC20(name, symbol) Ownable(msg.sender) {}
 
     function mint(address account, uint256 amount) external onlyOwner {
         _mint(account, amount);
@@ -16,7 +19,11 @@ contract FT is ERC20, Pausable, Ownable {
         _burn(msg.sender, amount);
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual whenNotPaused {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual whenNotPaused {
         // super._beforeTokenTransfer(from, to, amount);
     }
 

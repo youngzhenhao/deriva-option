@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: WTFPL
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import {ERC721} from "solmate/tokens/ERC721.sol";
@@ -18,10 +18,11 @@ contract NFT is ERC721, Ownable {
     uint256 public constant TOTAL_SUPPLY = 10_000;
     uint256 public constant MINT_PRICE = 0.08 ether;
 
-    constructor(string memory _name, string memory _symbol, string memory _baseURI)
-        ERC721(_name, _symbol)
-        Ownable(msg.sender)
-    {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        string memory _baseURI
+    ) ERC721(_name, _symbol) Ownable(msg.sender) {
         baseURI = _baseURI;
     }
 
@@ -37,11 +38,19 @@ contract NFT is ERC721, Ownable {
         return newTokenId;
     }
 
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
         if (ownerOf(tokenId) == address(0)) {
             revert NonExistentTokenURI();
         }
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
+        return bytes(baseURI).length > 0
+            ? string(abi.encodePacked(baseURI, tokenId.toString()))
+            : "";
     }
 
     function withdrawPayments(address payable payee) external onlyOwner {

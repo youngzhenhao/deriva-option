@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.7 <0.9.0;
 
-import "ds-test/test.sol";
+import {DSTest} from "ds-test/test.sol";
 import "forge-std/StdStorage.sol";
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
-import "../src/mocks/MockV3Aggregator.sol";
-import "../src/mocks/MockERC20.sol";
+import {MockV3Aggregator} from "../src/mocks/MockV3Aggregator.sol";
+import {MockERC20} from "../src/mocks/MockERC20.sol";
 
-import "../src/oracle/PriceFeedConsumer.sol";
-import "../src/CallOptions.sol";
+import {PriceFeedConsumer} from "../src/oracle/PriceFeedConsumer.sol";
+import {CallOptions} from "../src/CallOptions.sol";
 
 contract CallOptionsTest is DSTest {
     //Setup contracts
@@ -29,7 +29,9 @@ contract CallOptionsTest is DSTest {
     StdStorage public stdstore;
 
     //Events
-    event CallOptionOpen(address indexed writer, uint256 id, uint256 expiration, uint256 value);
+    event CallOptionOpen(
+        address indexed writer, uint256 id, uint256 expiration, uint256 value
+    );
     event CallOptionBought(address indexed buyer, uint256 id);
 
     //Errors
@@ -37,10 +39,11 @@ contract CallOptionsTest is DSTest {
 
     function setUp() public {
         dai = new MockERC20("DAI COIN", "DAI");
-        call = new CallOptions(address(dai));
 
         mockV3Aggregator = new MockV3Aggregator(DECIMALS, INITIAL_ANSWER);
         priceFeed = new PriceFeedConsumer(address(mockV3Aggregator));
+
+        call = new CallOptions(address(dai), address(priceFeed));
 
         // call.Option storage option = call.Option({
         //     writer: msg.sender,
@@ -116,7 +119,11 @@ contract CallOptionsTest is DSTest {
         call.sellCall{value: 1 ether}(1 ether, 1, 1);
     }
 
-    function test_writeCallOptionFuzz(uint96 _strike, uint96 _premiumDue, uint96 _secondsToExpiry) public {
+    function test_writeCallOptionFuzz(
+        uint96 _strike,
+        uint96 _premiumDue,
+        uint96 _secondsToExpiry
+    ) public {
         _strike = 1 ether;
         call.sellCall{value: 1 ether}(_strike, _premiumDue, _secondsToExpiry);
     }

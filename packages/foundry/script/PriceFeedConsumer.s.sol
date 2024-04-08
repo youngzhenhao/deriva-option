@@ -1,15 +1,17 @@
-// SPDX-License-Identifier: WTFPL
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
 import {Script} from "forge-std/Script.sol";
 import {PriceFeedConsumer} from "../src/oracle/PriceFeedConsumer.sol";
 
 contract PriceFeedConsumerScript is Script {
-    address MOCKV3AGGREGATOR_ADDRESS = 0xF7d89cAE730994fEb722F9B657219C52F9304e87;
+    address MOCKV3AGGREGATOR_ADDRESS =
+        0xF7d89cAE730994fEb722F9B657219C52F9304e87;
 
     function run() external {
         vm.startBroadcast();
-        PriceFeedConsumer priceFeedConsumer = new PriceFeedConsumer(MOCKV3AGGREGATOR_ADDRESS);
+        PriceFeedConsumer priceFeedConsumer =
+            new PriceFeedConsumer(MOCKV3AGGREGATOR_ADDRESS);
         vm.stopBroadcast();
     }
 }
@@ -87,7 +89,7 @@ contract PriceFeedConsumerScript is Script {
  * Start verification for (1) contracts
  * Start verifying contract `0x4133320051906a707900f06857836f1368136dBd` deployed on sepolia
  *
- * Submitting verification for [src/oracle/PriceFeedConsumer.sol:PriceFeedConsumer] 0x4133320051906a707900f06857836f1368136dBd.        
+ * Submitting verification for [src/oracle/PriceFeedConsumer.sol:PriceFeedConsumer] 0x4133320051906a707900f06857836f1368136dBd.
  * Submitted contract for verification:
  *         Response: `OK`
  *         GUID: `itav5nibehfkujvsjmeavltuzqczqecwmbyk2hz9wlvdqntj4i`

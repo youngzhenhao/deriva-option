@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ReentrancyGuard} from
+    "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {FT} from "./FT.sol";
 import {PriceFeedConsumer} from "./oracle/PriceFeedConsumer.sol";
 
 // @title COVERED CALL OPTIONS
-// @author tobias
 // @notice This Smart Contract allows for the buying/writing of Covered Calls with ETH as the underlying.
-
 // As an Example, use Chainlink DAI/ETH Price Feed.
 // Calls: Let you buy an asset at a set price on a specific date.
 // Covered Call: The seller(writer) transfers ETH for collateral and writes a Covered Call. The buyer pays premium w DAI.
@@ -25,14 +24,16 @@ contract CallOptions is ReentrancyGuard {
     error TransferFailed();
     error OptionNotValid(uint256 _optionId);
 
-    event CallOptionOpen(address indexed writer, uint256 id, uint256 expiration, uint256 value);
+    event CallOptionOpen(
+        address indexed writer, uint256 id, uint256 expiration, uint256 value
+    );
     event CallOptionBought(address indexed buyer, uint256 id);
     event CallOptionExercised(address indexed buyer, uint256 id);
     event OptionExpiresWorthless(address indexed buyer, uint256 Id);
     event FundsRetrieved(address indexed writer, uint256 id, uint256 value);
 
     PriceFeedConsumer internal priceFeed;
-    IERC20 dai;
+    FT dai;
     uint256 public optionId;
 
     mapping(address => address) public tokenToEthFeed;
@@ -70,23 +71,27 @@ contract CallOptions is ReentrancyGuard {
     }
 
     modifier isValidOpenOption(uint256 id) {
-        if (optionIdToOption[id].optionState != OptionState.Open || optionIdToOption[id].expiration > block.timestamp) {
+        if (
+            optionIdToOption[id].optionState != OptionState.Open
+                || optionIdToOption[id].expiration > block.timestamp
+        ) {
             revert OptionNotValid(id);
         }
         _;
     }
 
     //CONSTRUCTOR
-    constructor(address _daiAddr) {
-        dai = IERC20(_daiAddr);
+    constructor(address _daiAddr, address _priceFeedAddr) {
+        dai = FT(_daiAddr);
+        priceFeed = PriceFeedConsumer(_priceFeedAddr);
     }
 
     ///@dev Write a call option against ETH collateral
-    function sellCall(uint256 _strike, uint256 _premiumDue, uint256 _secondsToExpiry)
-        external
-        payable
-        returns (uint256)
-    {
+    function sellCall(
+        uint256 _strike,
+        uint256 _premiumDue,
+        uint256 _secondsToExpiry
+    ) external payable returns (uint256) {
         //To simplify, we only make one strike available, strike is the current marketprice.
         if (msg.value != _strike) revert Unauthorized();
 
@@ -106,7 +111,9 @@ contract CallOptions is ReentrancyGuard {
 
         tradersPosition[msg.sender].push(optionId);
 
-        emit CallOptionOpen(msg.sender, optionId, block.timestamp + _secondsToExpiry, msg.value);
+        emit CallOptionOpen(
+            msg.sender, optionId, block.timestamp + _secondsToExpiry, msg.value
+        );
 
         return optionId;
     }
@@ -115,10 +122,14 @@ contract CallOptions is ReentrancyGuard {
     function buyCall(uint256 _optionId) external nonReentrant {
         Option memory option = optionIdToOption[_optionId];
 
-        if (option.optionType != OptionType.Call || option.optionState != OptionState.Open) revert Unauthorized();
+        if (
+            option.optionType != OptionType.Call
+                || option.optionState != OptionState.Open
+        ) revert Unauthorized();
 
         //buyer pays writer w dai
-        bool paid = dai.transferFrom(msg.sender, option.writer, option.premiumDue);
+        bool paid =
+            dai.transferFrom(msg.sender, option.writer, option.premiumDue);
         if (!paid) revert TransferFailed();
 
         optionIdToOption[_optionId].buyer = msg.sender;
@@ -129,12 +140,18 @@ contract CallOptions is ReentrancyGuard {
     }
 
     ///@dev Buyer gets to exercise the option is spot price > strike after expiration.
-    function exerciseCall(uint256 _optionId, uint256 _amount) external payable optionExists(_optionId) nonReentrant {
+    function exerciseCall(
+        uint256 _optionId,
+        uint256 _amount
+    ) external payable optionExists(_optionId) nonReentrant {
         Option memory option = optionIdToOption[_optionId];
 
         if (msg.sender != option.buyer) revert Unauthorized();
         if (option.optionState != OptionState.Bought) revert Unauthorized();
-        if (option.expiration != block.timestamp || option.expiration > block.timestamp) revert Unauthorized();
+        if (
+            option.expiration != block.timestamp
+                || option.expiration > block.timestamp
+        ) revert Unauthorized();
 
         //for dai/eth, chainlink returns x amt of eth for 1 dai
         uint256 marketPriceInEth = priceFeed.getPriceFeed(_amount);
@@ -161,13 +178,19 @@ contract CallOptions is ReentrancyGuard {
 
     ///@dev Cancel Option after expiration and if it's worthless
     ///In practice, a function like this would probably get run by the protocol
-    function optionExpiresWorthless(uint256 _optionId, uint256 _amount) external optionExists(_optionId) {
+    function optionExpiresWorthless(
+        uint256 _optionId,
+        uint256 _amount
+    ) external optionExists(_optionId) {
         Option memory option = optionIdToOption[_optionId];
 
         if (option.optionState != OptionState.Bought) revert Unauthorized();
 
         //etiher writer or buyer can cancel option after expiration if it is worthless
-        if (optionIdToOption[_optionId].buyer != msg.sender || optionIdToOption[_optionId].writer != msg.sender) {
+        if (
+            optionIdToOption[_optionId].buyer != msg.sender
+                || optionIdToOption[_optionId].writer != msg.sender
+        ) {
             revert Unauthorized();
         }
 

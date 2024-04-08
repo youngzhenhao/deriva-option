@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.20;
 
 //SOURCE: https://github.com/smartcontractkit/foundry-starter-kit/blob/main/src/test/mocks/MockV3Aggregator.sol
 /**
