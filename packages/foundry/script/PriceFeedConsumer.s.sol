@@ -3,6 +3,7 @@ pragma solidity ^0.8.22;
 
 import {Script} from "forge-std/Script.sol";
 import {PriceFeedConsumer} from "../src/oracle/PriceFeedConsumer.sol";
+import "./DeployHelpers.s.sol";
 
 contract PriceFeedConsumerScript is Script {
     address MOCKV3AGGREGATOR_ADDRESS =
@@ -12,6 +13,8 @@ contract PriceFeedConsumerScript is Script {
         vm.startBroadcast();
         PriceFeedConsumer priceFeedConsumer =
             new PriceFeedConsumer(MOCKV3AGGREGATOR_ADDRESS);
+        console.logString(vm.toString(address(priceFeedConsumer)));
+        
         vm.stopBroadcast();
     }
 }

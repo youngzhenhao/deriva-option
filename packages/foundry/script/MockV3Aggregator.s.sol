@@ -3,11 +3,13 @@ pragma solidity ^0.8.22;
 
 import {Script} from "forge-std/Script.sol";
 import {MockV3Aggregator} from "../src/mocks/MockV3Aggregator.sol";
+import "./DeployHelpers.s.sol";
 
 contract MockV3AggregatorScript is Script {
     function run() external {
         vm.startBroadcast();
         MockV3Aggregator mockV3Aggregator = new MockV3Aggregator(18, 1e18);
+        console.logString(vm.toString(address(mockV3Aggregator)));
         vm.stopBroadcast();
     }
 }

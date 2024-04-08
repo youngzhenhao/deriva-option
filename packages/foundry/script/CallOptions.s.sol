@@ -3,6 +3,7 @@ pragma solidity ^0.8.22;
 
 import {Script} from "forge-std/Script.sol";
 import {CallOptions} from "../src/CallOptions.sol";
+import "./DeployHelpers.s.sol";
 
 contract CallOptionsScript is Script {
     address DAI_ADDRESS = 0xCCC6eBcEb5ed4D5dbD34EC6f31d7c73d3dF512b0;
@@ -12,6 +13,7 @@ contract CallOptionsScript is Script {
         vm.startBroadcast();
         CallOptions callOptions =
             new CallOptions(DAI_ADDRESS, PRICEFEED_ADDRESS);
+        console.logString(vm.toString(address(callOptions)));
         vm.stopBroadcast();
     }
 }

@@ -19,21 +19,21 @@ contract FT is ERC20, Pausable, Ownable {
         _burn(msg.sender, amount);
     }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual whenNotPaused {
-        // super._beforeTokenTransfer(from, to, amount);
-    }
+    // function _beforeTokenTransfer(
+    //     address from,
+    //     address to,
+    //     uint256 amount
+    // ) internal virtual whenNotPaused {
+    //     // super._beforeTokenTransfer(from, to, amount);
+    // }
 
-    function _doSomething() internal virtual whenNotPaused {
-        // ...
-    }
+    // function _doSomething() internal virtual whenNotPaused {
+    //     // ...
+    // }
 
-    function _doEmergencyStop() internal virtual whenPaused {
-        // ...
-    }
+    // function _doEmergencyStop() internal virtual whenPaused {
+    //     // ...
+    // }
 
     function pause() external onlyOwner {
         _pause();
