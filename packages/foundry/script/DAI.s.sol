@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {DAI} from "../src/DAI.sol";
 import "./DeployHelpers.s.sol";
 
-contract DeployScript is ScaffoldETHDeploy {
+contract DAIScript is ScaffoldETHDeploy {
     error InvalidPrivateKey(string);
 
     function run() external {
