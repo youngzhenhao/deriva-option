@@ -20,7 +20,13 @@ import {PriceFeedConsumer} from "./oracle/PriceFeedConsumer.sol";
 // Covered Calls - You sell upside on an asset while you hold it for yield, which comes from premium (Netural/Bullish on asset).
 
 contract CallOptions is ReentrancyGuard {
-    error Unauthorized();
+    error Unauthorized(address);
+    error WrongValue(uint256);
+    error WrongTypeOrState();
+    error WrongState(OptionState);
+    error WrongType(OptionType);
+    error WrongTime(uint256);
+
     error TransferFailed();
     error OptionNotValid(uint256 _optionId);
 
@@ -93,7 +99,7 @@ contract CallOptions is ReentrancyGuard {
         uint256 _secondsToExpiry
     ) external payable returns (uint256) {
         //To simplify, we only make one strike available, strike is the current marketprice.
-        if (msg.value != _strike) revert Unauthorized();
+        if (msg.value != _strike) revert WrongValue(msg.value);
 
         ++optionId;
 
@@ -125,7 +131,7 @@ contract CallOptions is ReentrancyGuard {
         if (
             option.optionType != OptionType.Call
                 || option.optionState != OptionState.Open
-        ) revert Unauthorized();
+        ) revert WrongTypeOrState();
 
         //buyer pays writer w dai
         bool paid =
@@ -146,12 +152,9 @@ contract CallOptions is ReentrancyGuard {
     ) external payable optionExists(_optionId) nonReentrant {
         Option memory option = optionIdToOption[_optionId];
 
-        if (msg.sender != option.buyer) revert Unauthorized();
-        if (option.optionState != OptionState.Bought) revert Unauthorized();
-        if (
-            option.expiration != block.timestamp
-                || option.expiration > block.timestamp
-        ) revert Unauthorized();
+        if (msg.sender != option.buyer) revert Unauthorized(msg.sender);
+        if (option.optionState != OptionState.Bought) revert WrongState(option.optionState);
+        if (option.expiration > block.timestamp) revert WrongTime(block.timestamp);
 
         //for dai/eth, chainlink returns x amt of eth for 1 dai
         uint256 marketPriceInEth = priceFeed.getPriceFeed(_amount);
@@ -184,23 +187,23 @@ contract CallOptions is ReentrancyGuard {
     ) external optionExists(_optionId) {
         Option memory option = optionIdToOption[_optionId];
 
-        if (option.optionState != OptionState.Bought) revert Unauthorized();
+        if (option.optionState != OptionState.Bought) revert WrongState(option.optionState);
 
         //etiher writer or buyer can cancel option after expiration if it is worthless
         if (
             optionIdToOption[_optionId].buyer != msg.sender
                 || optionIdToOption[_optionId].writer != msg.sender
         ) {
-            revert Unauthorized();
+            revert Unauthorized(msg.sender);
         }
 
-        if (option.expiration > block.timestamp) revert Unauthorized();
-        if (option.optionType != OptionType.Call) revert Unauthorized();
+        if (option.expiration > block.timestamp) revert WrongTime(option.expiration);
+        if (option.optionType != OptionType.Call) revert WrongType(option.optionType);
 
         uint256 marketPriceInEth = priceFeed.getPriceFeed(_amount);
 
         //For call, if market < strike, call options expire worthless
-        if (marketPriceInEth >= option.strike) revert Unauthorized();
+        if (marketPriceInEth >= option.strike) revert WrongValue(marketPriceInEth);
 
         optionIdToOption[_optionId].optionState = OptionState.Cancelled;
 
@@ -211,8 +214,8 @@ contract CallOptions is ReentrancyGuard {
     function retrieveExpiredFunds(uint256 _optionId) external nonReentrant {
         Option memory option = optionIdToOption[_optionId];
 
-        if (option.optionState != OptionState.Cancelled) revert Unauthorized();
-        if (msg.sender != option.writer) revert Unauthorized();
+        if (option.optionState != OptionState.Cancelled) revert WrongState(option.optionState);
+        if (msg.sender != option.writer) revert Unauthorized(msg.sender);
 
         (bool paid,) = payable(msg.sender).call{value: option.collateral}("");
         if (!paid) revert TransferFailed();
