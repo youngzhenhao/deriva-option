@@ -17,6 +17,7 @@
     "paths": {
       "~~/*": ["./*"]
     },
+    "allowImportingTsExtensions": true,
     "plugins": [
       {
         "name": "next"

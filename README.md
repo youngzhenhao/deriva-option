@@ -1,79 +1,99 @@
-# 🏗 Scaffold-ETH 2
+# Deriva-Option
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+ERC20 之间的金融衍生品期权协议
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## 说明
 
-⚙️ Built using NextJS, RainbowKit, Foundry, Wagmi, Viem, and Typescript.
+本项目依赖版本
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+- node v18.20.0
+- npm v10.5.0
+- yarn v3.2.3
+- solidity v0.8.22
+- forge v0.2.0
+- anvil v0.2.0
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+## TODO
 
-## Requirements
+- 增加 ETH 和 ERC20 之间的期权交易
+- 是否增加更多期权价格逻辑(交流...)
+- 完成CopyString.tsx
+- 更改主题颜色，tailwind theme generator
+- 增加更多的功能
+- 文档和指导记录
 
-Before you begin, you need to install the following tools:
+## 开始使用
 
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+0. 克隆本项目到本地
 
-## Quickstart
-
-To get started with Scaffold-ETH 2, follow the steps below:
-
-1. Install dependencies if it was skipped in CLI:
-
-```
-cd my-dapp-example
-yarn install
+```bash
+git clone https://github.com/youngzhenhao/deriva-option.git
 ```
 
-2. Run a local network in the first terminal:
+1. 在项目文件夹安装依赖
+
+```powershell
+cd .\deriva-option
+yarn
+```
+
+2. 在项目的 `.\packages\foundry\.env` 和`.\packages\nextjs\.env.local` 文件中配置环境变量
+
+- `DEPLOYER_PRIVATE_KEY` 是部署者的私钥，用于部署测试合约，可在本地网络启动后从控制台输出复制一个有余额的可用私钥
+- `ALCHEMY_API_KEY` 和 `ETHERSCAN_API_KEY` 是用于连接以太坊测试网络的 API 密钥，自行注册获取
+- `NEXT_PUBLIC_ALCHEMY_API_KEY` 和 `ALCHEMY_API_KEY` 相同即可
+- `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` 在 Wallet Connect 注册获取
 
 ```
+# .env
+DEPLOYER_PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+ALCHEMY_API_KEY=
+ETHERSCAN_API_KEY=
+# .env.local
+NEXT_PUBLIC_ALCHEMY_API_KEY=
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=
+```
+
+- 在 `.\packages\foundry\foundry.toml` 配置本地网络
+- 查看 `DEPLOYER_PRIVATE_KEY` 对应的账户地址在各网络余额：
+
+```
+yarn account
+```
+
+3. 在第一个终端中启动本地以太坊网络：
+
+```powershell
 yarn chain
 ```
 
-This command starts a local Ethereum network using Foundry. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/foundry/foundry.toml`.
+- 使用 JSON-RPC 与本地网络交互
+  https://ethereum.github.io/execution-apis/api-documentation/
 
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/foundry/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/foundry/script` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
+4. 在第二个终端中启动前端项目：
 
 ```
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+- 访问 `http://localhost:3000` 访问前端项目
 
-Run smart contract test with `yarn foundry:test`
+5. 在第三个终端中编译并部署智能合约：
 
-- Edit your smart contract `YourContract.sol` in `packages/foundry/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/foundry/script`
+- 部署一个 Deriva-Option 合约绑定的 ERC20 稳定币 DAI 合约
+- 部署另一个与 DAI 进行期权交易的 ERC20 稳定币 FT 合约
+- 部署 Deriva-Option 合约
 
-## Documentation
+```
+yarn deploy:DAI
+yarn deploy:FT
+yarn deploy:DeOp
+```
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+6. 部署完成后，在前端页面使用 MetaMask 连接账户
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+7. 在调试合约界面进行期权交易
 
-## Contributing to Scaffold-ETH 2
+- 如合约调用一直处于等待状态，重新安装MetaMask(暂解决)
 
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+8. 在区块浏览器界面进行交易查询

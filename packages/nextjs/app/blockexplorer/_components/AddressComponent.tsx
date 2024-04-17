@@ -1,4 +1,4 @@
-import { BackButton } from "./BackButton";
+import { BackButtonEdited } from "./BackButton";
 import { ContractTabs } from "./ContractTabs";
 import { Address, Balance } from "~~/components/scaffold-eth";
 
@@ -12,7 +12,7 @@ export const AddressComponent = ({
   return (
     <div className="m-10 mb-20">
       <div className="flex justify-start mb-5">
-        <BackButton />
+        <BackButtonEdited />
       </div>
       <div className="col-span-5 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
         <div className="col-span-1 flex flex-col">

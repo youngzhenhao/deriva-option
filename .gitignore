@@ -9,8 +9,11 @@ node_modules
 !.yarn/sdks
 !.yarn/versions
 .eslintcache
-.vscode/**
+#.vscode/**
 .DS_Store
-.vscode
+#.vscode
 .idea
 .vercel
+temp
+.deps
+artifacts

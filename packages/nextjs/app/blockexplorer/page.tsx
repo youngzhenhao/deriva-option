@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PaginationButton, SearchBar, TransactionsTable } from "./_components";
+import { PaginationButton, PaginationButtonEdited, SearchBar, TransactionsTable } from "./_components";
 import type { NextPage } from "next";
 import { hardhat } from "viem/chains";
 import { useFetchBlocks } from "~~/hooks/scaffold-eth";
@@ -58,13 +58,14 @@ const BlockExplorer: NextPage = () => {
     if (hasError) {
       notification.error(
         <>
-          <p className="font-bold mt-0 mb-1">Cannot connect to local provider</p>
+          <p className="font-bold mt-0 mb-1">无法连接到本地提供者(provider)</p>
           <p className="m-0">
-            - Did you forget to run <code className="italic bg-base-300 text-base font-bold">yarn chain</code> ?
+            - 你是否忘记了运行 <code className="italic bg-base-300 text-base font-bold">yarn chain</code> ?
           </p>
           <p className="mt-1 break-normal">
-            - Or you can change <code className="italic bg-base-300 text-base font-bold">targetNetwork</code> in{" "}
+            - 或者你可以在
             <code className="italic bg-base-300 text-base font-bold">scaffold.config.ts</code>
+            中更改<code className="italic bg-base-300 text-base font-bold">目标网络</code>
           </p>
         </>,
       );
@@ -75,7 +76,11 @@ const BlockExplorer: NextPage = () => {
     <div className="container mx-auto my-10">
       <SearchBar />
       <TransactionsTable blocks={blocks} transactionReceipts={transactionReceipts} />
-      <PaginationButton currentPage={currentPage} totalItems={Number(totalBlocks)} setCurrentPage={setCurrentPage} />
+      <PaginationButtonEdited
+        currentPage={currentPage}
+        totalItems={Number(totalBlocks)}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 };

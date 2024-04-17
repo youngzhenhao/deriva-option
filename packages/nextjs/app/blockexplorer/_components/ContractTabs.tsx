@@ -47,7 +47,7 @@ export const ContractTabs = ({ address, contractData }: PageProps) => {
       return tx.from.toLowerCase() === address.toLowerCase() || tx.to?.toLowerCase() === address.toLowerCase();
     }),
   );
-
+  // @dev: edited
   return (
     <>
       {isContract && (

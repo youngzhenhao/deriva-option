@@ -45,28 +45,28 @@ const TransactionPage: NextPage<PageProps> = ({ params }: PageProps) => {
   return (
     <div className="container mx-auto mt-10 mb-20 px-10 md:px-0">
       <button className="btn btn-sm btn-primary" onClick={() => router.back()}>
-        Back
+        返回
       </button>
       {transaction ? (
         <div className="overflow-x-auto">
-          <h2 className="text-3xl font-bold mb-4 text-center text-primary-content">Transaction Details</h2>{" "}
+          <h2 className="text-3xl font-bold mb-4 text-center text-primary-content">交易明细</h2>{" "}
           <table className="table rounded-lg bg-base-100 w-full shadow-lg md:table-lg table-md">
             <tbody>
               <tr>
-                <td>
-                  <strong>Transaction Hash:</strong>
+                <td className="w-1/6">
+                  <strong>交易哈希:</strong>
                 </td>
                 <td>{transaction.hash}</td>
               </tr>
               <tr>
                 <td>
-                  <strong>Block Number:</strong>
+                  <strong>区块编号:</strong>
                 </td>
                 <td>{Number(transaction.blockNumber)}</td>
               </tr>
               <tr>
                 <td>
-                  <strong>From:</strong>
+                  <strong>发起地址:</strong>
                 </td>
                 <td>
                   <Address address={transaction.from} format="long" />
@@ -74,14 +74,14 @@ const TransactionPage: NextPage<PageProps> = ({ params }: PageProps) => {
               </tr>
               <tr>
                 <td>
-                  <strong>To:</strong>
+                  <strong>接收地址:</strong>
                 </td>
                 <td>
                   {!receipt?.contractAddress ? (
                     transaction.to && <Address address={transaction.to} format="long" />
                   ) : (
                     <span>
-                      Contract Creation:
+                      合约创建:
                       <Address address={receipt.contractAddress} format="long" />
                     </span>
                   )}
@@ -89,7 +89,7 @@ const TransactionPage: NextPage<PageProps> = ({ params }: PageProps) => {
               </tr>
               <tr>
                 <td>
-                  <strong>Value:</strong>
+                  <strong>交易价值:</strong>
                 </td>
                 <td>
                   {formatEther(transaction.value)} {targetNetwork.nativeCurrency.symbol}
@@ -97,7 +97,7 @@ const TransactionPage: NextPage<PageProps> = ({ params }: PageProps) => {
               </tr>
               <tr>
                 <td>
-                  <strong>Function called:</strong>
+                  <strong>调用函数:</strong>
                 </td>
                 <td>
                   <div className="w-full md:max-w-[600px] lg:max-w-[800px] overflow-x-auto whitespace-nowrap">
@@ -114,13 +114,13 @@ const TransactionPage: NextPage<PageProps> = ({ params }: PageProps) => {
               </tr>
               <tr>
                 <td>
-                  <strong>Gas Price:</strong>
+                  <strong>Gas价格:</strong>
                 </td>
                 <td>{formatUnits(transaction.gasPrice || 0n, 9)} Gwei</td>
               </tr>
               <tr>
                 <td>
-                  <strong>Data:</strong>
+                  <strong>数据:</strong>
                 </td>
                 <td className="form-control">
                   <textarea readOnly value={transaction.input} className="p-0 textarea-primary bg-inherit h-[150px]" />
@@ -128,7 +128,7 @@ const TransactionPage: NextPage<PageProps> = ({ params }: PageProps) => {
               </tr>
               <tr>
                 <td>
-                  <strong>Logs:</strong>
+                  <strong>日志:</strong>
                 </td>
                 <td>
                   <ul>
@@ -144,7 +144,7 @@ const TransactionPage: NextPage<PageProps> = ({ params }: PageProps) => {
           </table>
         </div>
       ) : (
-        <p className="text-2xl text-base-content">Loading...</p>
+        <p className="text-2xl text-base-content">加载中...</p>
       )}
     </div>
   );
