@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { CheckCircleIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 
+// @note: This component is used to copy a fixed string to the clipboard.
+// @dev: This component has bug now, it will not work properly, need to fix it.
 export const CopyString = (fixedStringToCopy: string) => {
   const [stringCopied, setStringCopied] = useState(false);
 
