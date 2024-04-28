@@ -36,7 +36,7 @@ const Home: NextPage = () => {
             </code>
           </p>
         </div>
-        <div className="block text-2xl mx-2">本项目实现了ERC20之间的金融衍生品期权协议</div>
+        <div className="block text-2xl mx-2">本项目实现了ERC20之间及ERC20和ETH之间的金融衍生品期权协议</div>
         {/* TODO: copy private key to clipboard */}
         {/* <div>
           <p className="text-center text-lg mx-4">

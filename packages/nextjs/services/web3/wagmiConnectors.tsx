@@ -70,7 +70,8 @@ const wallets = [
  */
 export const wagmiConnectors = connectorsForWallets([
   {
-    groupName: "Supported Wallets",
+    // groupName: "Supported Wallets",
+    groupName: "支持的钱包列表",
     wallets,
   },
 ]);
