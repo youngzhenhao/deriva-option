@@ -128,7 +128,7 @@ export const WriteOnlyFunctionForm = ({
           >
             <button className="btn btn-secondary btn-sm" disabled={writeDisabled || isLoading} onClick={handleWrite}>
               {isLoading && <span className="loading loading-spinner loading-xs"></span>}
-              Send 💸
+              发起交易 💸
             </button>
           </div>
         </div>

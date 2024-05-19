@@ -9,7 +9,7 @@ import {console} from "./console.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {PriceFeedConsumer} from "./OptionPriceFeedConsumer.sol";
+import {PriceFeedConsumer} from "./PriceFeedConsumer.sol";
 
 // @note: Deriva-Option's Contract
 
@@ -20,7 +20,7 @@ import {PriceFeedConsumer} from "./OptionPriceFeedConsumer.sol";
  *      to avoid a stack too deep error.
  */
 
-contract Deriva is ReentrancyGuard {
+contract DerivaOption is ReentrancyGuard {
     using SafeMath for uint256;
 
     /**
@@ -1597,8 +1597,8 @@ contract Deriva is ReentrancyGuard {
 
     // @dev: CallOption
 
-    ///@dev Write a call option against ETH collateral
-    function sellCall_ETH(uint256 _strike, uint256 _premiumDue, uint _amount, uint256 _secondsToExpiry, bool _isCallOption)
+    ///@dev Write a option against ETH collateral
+    function sellOption_ETH(uint256 _strike, uint256 _premiumDue, uint _amount, uint256 _secondsToExpiry, bool _isCallOption)
         external
         payable
         returns (uint256)
@@ -1657,12 +1657,13 @@ contract Deriva is ReentrancyGuard {
         return lastOptionId_ETH;
     }
 
-    ///@dev Buy an available call option.
-    function buyCall_ETH(uint256 _optionId) external nonReentrant {
+    ///@dev Buy an available option.
+    function buyOption_ETH(uint256 _optionId) external nonReentrant {
         // @dev: log
         console.log("[buy_ETH]start");
         Option_ETH memory option = optionIdToOption_ETH[_optionId];
-
+        if (option.optionState != OptionState_ETH.Open) revert Unauthorized_ETH();
+        if (option.expiration < block.timestamp) revert Unauthorized_ETH();
         //buyer pays writer w dai
         // @dev: log
         console.log("[buy_ETH]transferFrom.from: ", msg.sender);

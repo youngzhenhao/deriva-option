@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {PriceFeedConsumer} from "./OptionPriceFeedConsumer.sol";
+import {PriceFeedConsumer} from "./PriceFeedConsumer.sol";
 
 contract PutOptions is ReentrancyGuard {
     error Unauthorized();
