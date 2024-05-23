@@ -90,12 +90,12 @@ yarn build
 
 - 部署一个 Deriva-Option 合约绑定的 ERC20 稳定币 DAI 合约
 - 部署另一个与 DAI 进行期权交易的 ERC20 稳定币 FT 合约
+- 部署MockAggregator合约
+- 部署PriceFeed合约
 - 部署 Deriva-Option 合约
 
 ```powershell
-yarn deploy:DAI
-yarn deploy:FT
-yarn deploy:DeOp
+yarn contracts
 ```
 
 - 如部署`DAI`合约时报错
