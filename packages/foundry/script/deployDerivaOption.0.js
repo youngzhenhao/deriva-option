@@ -23,9 +23,6 @@ function getFiles(path) {
   });
 }
 function getArtifactOfContract(contractName) {
-  if (contractName == null){
-    contractName = 'MockV3Aggregator';
-  }
   const current_path_to_artifacts = path.join(
     __dirname,
     "..",
@@ -81,7 +78,7 @@ function main() {
   const current_path_to_broadcast = path.join(
     __dirname,
     "..",
-    "broadcast/deployMock.sol"
+    "broadcast/deployDerivaOption.sol"
   );
   const current_path_to_deployments = path.join(__dirname, "..", "deployments");
 
@@ -139,7 +136,7 @@ function main() {
     fs.mkdirSync(TARGET_DIR);
   }
   fs.writeFileSync(
-    `${TARGET_DIR}mock.txt`,
+    `${TARGET_DIR}deop.txt`,
     prettier.format(
       `${generatedContractComment} import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract"; \n\n
  const deployedContracts = {${fileContent}} as const; \n\n export default deployedContracts satisfies GenericContractsDeclaration`,

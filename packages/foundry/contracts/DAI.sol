@@ -11,18 +11,18 @@ contract DAI is ERC20, Ownable {
         address addrB = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
         address addrC = 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC;
         address addrDeOp = 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9;
-        _mint(addrA, 2*1000*1e18);
-        _mint(addrB, 2*1000*1e18);
-        _mint(addrC, 2*1000*1e18);
-        _approve(addrA,addrB,1000*1e18);
-        _approve(addrA,addrC,1000*1e18);
-        _approve(addrB,addrA,1000*1e18);
-        _approve(addrB,addrC,1000*1e18);
-        _approve(addrC,addrA,1000*1e18);
-        _approve(addrC,addrB,1000*1e18);
-        _approve(addrA,addrDeOp,1000*1e18);
-        _approve(addrB,addrDeOp,1000*1e18);
-        _approve(addrC,addrDeOp,1000*1e18);
+        _mint(addrA, 2*1e6*1e18);
+        _mint(addrB, 2*1e6*1e18);
+        _mint(addrC, 2*1e6*1e18);
+        _approve(addrA,addrB,1e6*1e18);
+        _approve(addrA,addrC,1e6*1e18);
+        _approve(addrB,addrA,1e6*1e18);
+        _approve(addrB,addrC,1e6*1e18);
+        _approve(addrC,addrA,1e6*1e18);
+        _approve(addrC,addrB,1e6*1e18);
+        _approve(addrA,addrDeOp,1e6*1e18);
+        _approve(addrB,addrDeOp,1e6*1e18);
+        _approve(addrC,addrDeOp,1e6*1e18);
     }
 
     function mint(address account, uint256 amount) external onlyOwner {

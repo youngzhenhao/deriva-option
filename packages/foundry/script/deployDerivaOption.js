@@ -23,11 +23,13 @@ function getFiles(path) {
   });
 }
 function getArtifactOfContract(contractName) {
+  if (contractName == null){
+    contractName = 'DerivaOption';
+  }
   const current_path_to_artifacts = path.join(
     __dirname,
     "..",
     `out/${contractName}.sol`
-    // @dev: need to edit
   );
   const artifactJson = JSON.parse(
     fs.readFileSync(`${current_path_to_artifacts}/${contractName}.json`)
@@ -43,7 +45,7 @@ function delay(ms) {
 function getInheritedFromContracts(artifact) {
   // console.log("artifact: ");
   // console.log(artifact);
-  // delay(500);
+  // delay(2000);
   let inheritedFromContracts = [];
   for (const astNode of artifact.ast.nodes) {
     if (astNode.nodeType == "ContractDefinition") {
@@ -107,6 +109,7 @@ function main() {
       (transaction) => transaction.transactionType == "CREATE"
     );
     transactionsCreate.forEach((transaction) => {
+      // console.log(transaction)
       const artifact = getArtifactOfContract(transaction.contractName);
       allGeneratedContracts[chain][
         deployments[chain][transaction.contractAddress] ||

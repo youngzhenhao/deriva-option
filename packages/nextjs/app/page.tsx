@@ -67,7 +67,7 @@ const Home: NextPage = () => {
               <p>
                 使用&nbsp;
                 <Link href="/debug" passHref className="link">
-                  调试合约
+                  智能合约
                 </Link>
                 &nbsp;进行合约调试。
               </p>

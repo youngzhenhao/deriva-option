@@ -22,8 +22,8 @@ export const menuLinks: HeaderMenuLink[] = [
   },
   // TODO: multiple debug pages
   {
-    label: "调试合约",
-    href: "/debug",
+    label: "智能合约",
+    href: "/contracts",
     icon: <BugAntIcon className="h-4 w-4" />,
   },
   {

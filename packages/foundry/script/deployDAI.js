@@ -23,6 +23,9 @@ function getFiles(path) {
   });
 }
 function getArtifactOfContract(contractName) {
+  if (contractName == null){
+    contractName = 'DAI';
+  }
   const current_path_to_artifacts = path.join(
     __dirname,
     "..",
@@ -42,7 +45,7 @@ function delay(ms) {
 function getInheritedFromContracts(artifact) {
   // console.log("artifact: ");
   // console.log(artifact);
-  // delay(500);
+  // delay(2000);
   let inheritedFromContracts = [];
   for (const astNode of artifact.ast.nodes) {
     if (astNode.nodeType == "ContractDefinition") {
@@ -135,7 +138,7 @@ function main() {
     fs.mkdirSync(TARGET_DIR);
   }
   fs.writeFileSync(
-    `${TARGET_DIR}dai.ts`,
+    `${TARGET_DIR}dai.txt`,
     prettier.format(
       `${generatedContractComment} import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract"; \n\n
  const deployedContracts = {${fileContent}} as const; \n\n export default deployedContracts satisfies GenericContractsDeclaration`,
